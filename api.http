@@ -1,0 +1,32 @@
+@endpoint = http://localhost:32771
+
+### Get files
+POST {{endpoint}}/api/files HTTP/1.1
+Content-Type: application/json
+
+{
+    "path": "/home",
+    "recursive": true,
+    "filter": "*"
+}
+
+### Delete files
+DELETE {{endpoint}}/api/files HTTP/1.1
+Content-Type: application/json
+
+{
+    "path": "/home/a",
+    "recursive": true
+}
+
+### Generate files
+POST {{endpoint}}/api/generate HTTP/1.1
+Content-Type: application/json
+
+{
+    "path": "/home/a",
+    "folders": 3,
+    "subFolders": 5,
+    "filesPerFolder": 10,
+    "fileSize": 1024
+}
