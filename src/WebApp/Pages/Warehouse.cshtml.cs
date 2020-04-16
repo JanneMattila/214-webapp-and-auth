@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Graph;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -46,29 +46,22 @@ namespace WebApp.Pages
                 .Select(g => new { g.Id, g.DisplayName });
             var groupResponse = await groupRequest.GetAsync();
 
+            // Take group identifier (you could also store this in configuration store)
             var groupId = groupResponse.First().Id;
 
-            // Fetch users transitive group memberships
-            var getUserMemberGroupsRequest = graphserviceClient
+            // From: https://docs.microsoft.com/en-us/graph/api/user-checkmembergroups?view=graph-rest-1.0
+            // "Check for membership in the specified list of groups."
+            // "Returns from the list those groups of which the user"
+            // "has a direct or transitive membership."
+            var checkMembershipRequest = graphserviceClient
                 .Me
-                .TransitiveMemberOf
-                .Request()
-                .Filter($"id eq '{groupId}'")
-                .Top(1);
-            try
-            {
-                await getUserMemberGroupsRequest.GetAsync();
+                .CheckMemberGroups(new List<string>() { groupId })
+                .Request();
 
-                // Use is transitive member of this group.
-                UserIsPartOfGroup = true;
-            }
-            catch (ServiceException ex)
+            var checkMembershipResponse = await checkMembershipRequest.PostAsync();
+            if (checkMembershipResponse.Any())
             {
-                if (ex.StatusCode != HttpStatusCode.NotFound)
-                {
-                    // Other failure scenario
-                    throw;
-                }
+                UserIsPartOfGroup = true;
             }
 
             await DifferentGraphAPIClientExamples(graphserviceClient);

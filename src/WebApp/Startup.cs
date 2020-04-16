@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,12 +23,7 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddAuthentication(o =>
-                {
-                    o.DefaultScheme = AzureADDefaults.AuthenticationScheme;
-                    o.DefaultChallengeScheme = AzureADDefaults.OpenIdScheme;
-                    o.DefaultForbidScheme = AzureADDefaults.AuthenticationScheme;
-                })
+            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
                 .AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
             services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
@@ -40,7 +34,9 @@ namespace WebApp
                 options.Scope.Add("User.Read");
                 options.Scope.Add("Directory.Read.All");
 
+                options.UseTokenLifetime = true;
                 options.SaveTokens = true;
+                options.TokenValidationParameters.NameClaimType = "name";
 
                 options.Events = new OpenIdConnectEvents()
                 {
