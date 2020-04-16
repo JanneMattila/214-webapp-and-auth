@@ -10,7 +10,7 @@ namespace WebApp.Pages
 
         public void OnGet()
         {
-            Name = this.User.Identity.Name;
+            Name = User.Identity.Name;
         }
     }
 }
