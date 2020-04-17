@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace WebApp
@@ -51,9 +53,29 @@ namespace WebApp
                             // After authorization code has been received.
                             // Do you want to execute something here?
                             await Task.CompletedTask;
+                        },
+                        OnTokenValidated = async context =>
+                        {
+                            // After authorization code has been received.
+                            // Do you want to execute something here?
+                            var claims = new List<Claim>()
+                            {
+                                new Claim("demotype", "demovalue1")
+                            };
+                            context.Principal.AddIdentity(new ClaimsIdentity(claims));
+                            await Task.CompletedTask;
                         }
                     };
                 });
+
+            // See "Products" page which uses this policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CustomClaim", policy =>
+                {
+                    policy.RequireClaim("demotype", "demovalue1", "demovalue2");
+                });
+            });
 
             services.AddControllers();
             services.AddRazorPages();

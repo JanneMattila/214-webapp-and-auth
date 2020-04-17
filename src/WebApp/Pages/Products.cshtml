@@ -1,0 +1,11 @@
+﻿@page
+@model WebApp.Pages.ProductsModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+@await Html.PartialAsync("_Links")
+
+<h3>Products</h3>
+
+User has custom claim: <b>@Model.UserHasCustomClaim</b>
