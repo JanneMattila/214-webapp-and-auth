@@ -31,7 +31,10 @@ namespace WebApp
                     sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddCookie()
+                .AddCookie(options =>
+                {
+                    options.AccessDeniedPath = "/AccessDenied";
+                })
                 .AddOpenIdConnect(options =>
                 {
                     Configuration.Bind("AzureAd", options);

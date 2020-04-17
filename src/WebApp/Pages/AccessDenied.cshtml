@@ -1,0 +1,11 @@
+﻿@page
+@model WebApp.Pages.AccessDeniedModel
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+@await Html.PartialAsync("_Links")
+
+<h3>Access denied</h3>
+
+You tried to reach page that you don't have access to. Try other pages.
