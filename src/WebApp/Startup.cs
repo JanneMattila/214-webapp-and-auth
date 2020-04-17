@@ -1,5 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Threading.Tasks;
 
 namespace WebApp
@@ -23,31 +23,37 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-                .AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
-            services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
-            {
-                options.ResponseType = "id_token code";
-                options.Authority += "/v2.0/";
-
-                options.Scope.Add("User.Read");
-                options.Scope.Add("Directory.Read.All");
-
-                options.UseTokenLifetime = true;
-                options.SaveTokens = true;
-                options.TokenValidationParameters.NameClaimType = "name";
-
-                options.Events = new OpenIdConnectEvents()
+            services.AddAuthentication(sharedOptions =>
                 {
-                    OnAuthorizationCodeReceived = async context =>
+                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                })
+                .AddCookie()
+                .AddOpenIdConnect(options =>
+                {
+                    Configuration.Bind("AzureAd", options);
+
+                    options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+                    options.Authority += "/v2.0/";
+
+                    options.Scope.Add("User.Read");
+                    options.Scope.Add("Directory.Read.All");
+
+                    options.UseTokenLifetime = true;
+                    options.SaveTokens = true;
+                    options.TokenValidationParameters.NameClaimType = "name";
+
+                    options.Events = new OpenIdConnectEvents()
                     {
-                        // After authorization code has been received.
-                        // Do you want to execute something here?
-                        await Task.CompletedTask;
-                    }
-                };
-            });
+                        OnAuthorizationCodeReceived = async context =>
+                        {
+                            // After authorization code has been received.
+                            // Do you want to execute something here?
+                            await Task.CompletedTask;
+                        }
+                    };
+                });
 
             services.AddControllers();
             services.AddRazorPages();
