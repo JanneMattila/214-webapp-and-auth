@@ -59,8 +59,6 @@ namespace WebApp
                         },
                         OnTokenValidated = async context =>
                         {
-                            // After authorization code has been received.
-                            // Do you want to execute something here?
                             var claims = new List<Claim>()
                             {
                                 new Claim("demotype", "demovalue1")
