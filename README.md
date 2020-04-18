@@ -8,13 +8,13 @@
 
 ## Compare OpenID Connect endpoints
 
-https://login.microsoftonline.com/<tenantid>/.well-known/openid-configuration
+https://login.microsoftonline.com/tenantid/.well-known/openid-configuration
 
 ```json
-"userinfo_endpoint" : "https://login.microsoftonline.com/<tenantid>/openid/userinfo",
+"userinfo_endpoint" : "https://login.microsoftonline.com/tenantid/openid/userinfo",
 ```
 
-https://login.microsoftonline.com/<tenantid>/v2.0/.well-known/openid-configuration
+https://login.microsoftonline.com/tenantid/v2.0/.well-known/openid-configuration
 
 ```json
 "userinfo_endpoint" : "https://graph.microsoft.com/oidc/userinfo",
