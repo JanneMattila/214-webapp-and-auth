@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Compare OpenID Connect endpoints
+## Compare OpenID Connect metadata documents
 
 https://login.microsoftonline.com/tenantid/.well-known/openid-configuration
 
