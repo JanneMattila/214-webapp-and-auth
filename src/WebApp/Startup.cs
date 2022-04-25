@@ -85,6 +85,12 @@ namespace WebApp
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var pathBase = Configuration["CUSTOM_PATH"];
+            if (!string.IsNullOrEmpty(pathBase))
+            {
+                app.UsePathBase(new PathString(pathBase));
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
