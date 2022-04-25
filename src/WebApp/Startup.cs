@@ -111,6 +111,13 @@ namespace WebApp
                 options.KnownProxies.Add(IPAddress.Parse(knownProxy));
             }
 
+            var allowAllProxies = Configuration["CUSTOM_ALLOW_ALL_PROXIES"];
+            if (!string.IsNullOrEmpty(knownProxy) && bool.TryParse(allowAllProxies, out var value) && value)
+            {
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            }
+
             var forwardedHostHeader = Configuration["CUSTOM_FORWARDED_HOST_HEADER"];
             if (!string.IsNullOrEmpty(forwardedHostHeader))
             {
