@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -96,13 +97,27 @@ namespace WebApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            var options = new ForwardedHeadersOptions
             {
                 ForwardedHeaders =
                     ForwardedHeaders.XForwardedHost |
                     ForwardedHeaders.XForwardedFor |
                     ForwardedHeaders.XForwardedProto
-            });
+            };
+
+            var knownProxy = Configuration["CUSTOM_KNOWN_PROXY"];
+            if (!string.IsNullOrEmpty(knownProxy))
+            {
+                options.KnownProxies.Add(IPAddress.Parse(knownProxy));
+            }
+
+            var forwardedHostHeader = Configuration["CUSTOM_FORWARDED_HOST_HEADER"];
+            if (!string.IsNullOrEmpty(forwardedHostHeader))
+            {
+                options.ForwardedHostHeaderName = forwardedHostHeader;
+            }
+
+            app.UseForwardedHeaders(options);
             app.UseHttpsRedirection();
 
             app.UseRouting();
