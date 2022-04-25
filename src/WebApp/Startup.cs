@@ -112,7 +112,7 @@ namespace WebApp
             }
 
             var allowAllProxies = Configuration["CUSTOM_ALLOW_ALL_PROXIES"];
-            if (!string.IsNullOrEmpty(knownProxy) && bool.TryParse(allowAllProxies, out var value) && value)
+            if (!string.IsNullOrEmpty(allowAllProxies) && bool.TryParse(allowAllProxies, out var value) && value)
             {
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
