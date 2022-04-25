@@ -118,6 +118,12 @@ namespace WebApp
                 options.KnownProxies.Clear();
             }
 
+            var allowedHost = Configuration["CUSTOM_ALLOWED_HOST"];
+            if (!string.IsNullOrEmpty(allowedHost))
+            {
+                options.AllowedHosts.Add(allowedHost);
+            }
+
             var forwardedHostHeader = Configuration["CUSTOM_FORWARDED_HOST_HEADER"];
             if (!string.IsNullOrEmpty(forwardedHostHeader))
             {
