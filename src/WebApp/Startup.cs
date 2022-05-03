@@ -133,6 +133,7 @@ namespace WebApp
             app.UseForwardedHeaders(options);
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
