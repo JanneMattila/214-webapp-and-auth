@@ -1,4 +1,6 @@
-﻿fetch(`../api/values`)
+﻿console.log(`WebApp.ApiRoot: ${WebApp.ApiRoot}`);
+
+fetch(`${WebApp.ApiRoot}/values`)
     .then(response => {
         return response.json();
     })
